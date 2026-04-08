@@ -9,7 +9,6 @@ public class Shooting : MonoBehaviour
     [SerializeField] private Transform firePoint;
     [SerializeField] private ObjectPooler pooler;
 
-
     private void Update()
     {
         if(Input.GetKeyDown(KeyCode.K))
@@ -24,5 +23,4 @@ public class Shooting : MonoBehaviour
         Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
         rb.AddForce(transform.right * bulletForce, ForceMode2D.Impulse);
     }
-
 }
