@@ -17,6 +17,9 @@ public class Player : MonoBehaviour
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Animator animator;
 
+    [Header("Crouch Settings")]
+    [SerializeField] private BoxCollider2D boxCollider;
+
     [Header("Inputs")]
     [SerializeField] private float moveInput;
 
@@ -30,6 +33,10 @@ public class Player : MonoBehaviour
         {
             Flip();
         }
+
+        CrouchDown();
+
+        CrouchUp();
 
         HandleAnimations();
     }
@@ -58,6 +65,24 @@ public class Player : MonoBehaviour
     {
         facingDirection *= 1;
         transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y,transform.localScale.z);
+    }
+
+    void CrouchDown()
+    {
+        if(Input.GetKeyDown(KeyCode.S))
+        {
+            animator.SetBool("isCrouching", true);
+            boxCollider.enabled = false;
+        }
+    }
+
+    void CrouchUp()
+    {
+        if(Input.GetKeyUp(KeyCode.S))
+        {
+            animator.SetBool("isCrouching", false);
+            boxCollider.enabled = true;
+        }
     }
 
     void HandleAnimations()

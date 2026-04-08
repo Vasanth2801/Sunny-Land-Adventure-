@@ -1082,6 +1082,7 @@ MonoBehaviour:
   isGrounded: 0
   rb: {fileID: 2084618198}
   animator: {fileID: 1449699459}
+  boxCollider: {fileID: 2084618195}
   moveInput: 0
 --- !u!50 &2084618198
 Rigidbody2D:
