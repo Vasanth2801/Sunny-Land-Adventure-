@@ -106,7 +106,7 @@ public class Player : MonoBehaviour
         rb.linearVelocity = climbVelocity;
         rb.gravityScale = 0;
 
-        bool playerHasVerticalSpeed = Mathf.Abs(rb.linearVelocity.y) > Mathf.Epsilon;
+        bool playerHasVerticalSpeed = Mathf.Abs(rb.linearVelocity.y) > Mathf.Epsilon && !isGrounded;
         animator.SetBool("isClimbing", playerHasVerticalSpeed);
     }
 
