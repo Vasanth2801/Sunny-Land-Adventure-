@@ -5,6 +5,7 @@ public class Player : MonoBehaviour
     [Header("Movement Settings")]
     [SerializeField] private float speed = 5f;
     [SerializeField] private float jumpForce = 13f;
+    [SerializeField] private int facingDirection = 1;
 
     [Header("Ground Check Settings")]
     [SerializeField] private Transform groundCheck;
@@ -23,6 +24,11 @@ public class Player : MonoBehaviour
         moveInput = Input.GetAxisRaw("Horizontal");
 
         Jump();
+
+        if(moveInput < 0 && transform.localScale.x > 0 || moveInput > 0 && transform.localScale.x < 0)
+        {
+            Flip();
+        }
     }
 
     private void FixedUpdate()
@@ -43,5 +49,11 @@ public class Player : MonoBehaviour
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
         }
+    }
+
+    void Flip()
+    {
+        facingDirection *= 1;
+        transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y,transform.localScale.z);
     }
 }
