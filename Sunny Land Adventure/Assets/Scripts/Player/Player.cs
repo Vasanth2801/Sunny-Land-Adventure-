@@ -20,16 +20,22 @@ public class Player : MonoBehaviour
     [Header("Crouch Settings")]
     [SerializeField] private BoxCollider2D boxCollider;
 
+    [Header("Climbing Settings")]
+    [SerializeField] private float climbSpeed = 5f;
+    [SerializeField] private float gravityScaleAtStart;
+
     [Header("Inputs")]
-    [SerializeField] private float moveInput;
+    [SerializeField] private float moveInputX;
+    [SerializeField] private float moveInputY;
 
     private void Update()
     {
-        moveInput = Input.GetAxisRaw("Horizontal");
+        moveInputX = Input.GetAxisRaw("Horizontal");
+        moveInputY = Input.GetAxisRaw("Vertical");
 
         Jump();
 
-        if(moveInput < 0 && transform.localScale.x > 0 || moveInput > 0 && transform.localScale.x < 0)
+        if(moveInputX < 0 && transform.localScale.x > 0 || moveInputX > 0 && transform.localScale.x < 0)
         {
             Flip();
         }
@@ -37,6 +43,8 @@ public class Player : MonoBehaviour
         CrouchDown();
 
         CrouchUp();
+
+        ClimbLadder();
 
         HandleAnimations();
     }
@@ -48,7 +56,7 @@ public class Player : MonoBehaviour
 
     private void Move()
     {
-        rb.linearVelocity = new Vector2(moveInput * speed, rb.linearVelocity.y);
+        rb.linearVelocity = new Vector2(moveInputX * speed, rb.linearVelocity.y);
     }
 
     void Jump()
@@ -69,7 +77,7 @@ public class Player : MonoBehaviour
 
     void CrouchDown()
     {
-        if(Input.GetKeyDown(KeyCode.S))
+        if(Input.GetKeyDown(KeyCode.LeftShift))
         {
             animator.SetBool("isCrouching", true);
             boxCollider.enabled = false;
@@ -78,16 +86,33 @@ public class Player : MonoBehaviour
 
     void CrouchUp()
     {
-        if(Input.GetKeyUp(KeyCode.S))
+        if(Input.GetKeyUp(KeyCode.LeftShift))
         {
             animator.SetBool("isCrouching", false);
             boxCollider.enabled = true;
         }
     }
 
+    void ClimbLadder()
+    {
+        if(!rb.IsTouchingLayers(LayerMask.GetMask("Ladder")))
+        {
+            rb.gravityScale = gravityScaleAtStart;
+            animator.SetBool("isClimbing", false);
+            return;
+        }
+
+        Vector2 climbVelocity = new Vector2(rb.linearVelocity.x, moveInputY * climbSpeed);
+        rb.linearVelocity = climbVelocity;
+        rb.gravityScale = 0;
+
+        bool playerHasVerticalSpeed = Mathf.Abs(rb.linearVelocity.y) > Mathf.Epsilon;
+        animator.SetBool("isClimbing", playerHasVerticalSpeed);
+    }
+
     void HandleAnimations()
     {
-        animator.SetFloat("Speed", Mathf.Abs(moveInput));
+        animator.SetFloat("Speed", Mathf.Abs(moveInputX));
         animator.SetBool("isJumping",rb.linearVelocity.y > 0.1);
     }
 }
